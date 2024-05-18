@@ -1,3 +1,0 @@
-import os
-
-CLASSIFICATION_URL = os.getenv('CLASSIFICATION_URL')
