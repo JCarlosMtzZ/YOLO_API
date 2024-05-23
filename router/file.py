@@ -1,4 +1,4 @@
-from fastapi import File, UploadFile, APIRouter, Depends
+from fastapi import File, UploadFile, APIRouter, Depends, HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from config.db import get_db
@@ -23,8 +23,10 @@ async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db
 
     items = predictImage(image)
 
-    if not items or len(items) <= 0:
-        return {'message': "No items found"}
+    if items is None:
+        raise HTTPException(status_code=500, detail="Prediction failed. Please try again later.")
+    if len(items) <= 0:
+        raise HTTPException(status_code=404, detail="No items found in the photo.")
 
     for item in items:
         if item in items_dict:
@@ -33,21 +35,28 @@ async def upload_file(file: UploadFile = File(...), db: Session = Depends(get_db
             items_dict[item] = 1
     
     for name, quantity in items_dict.items():
-        query = text('SELECT * FROM get_full_product(:name);')
-        ext_item = db.execute(query, {'name': name}).fetchone()
+        try:
+            query = text('SELECT * FROM get_full_product(:name);')
+            ext_item = db.execute(query, {'name': name}).fetchone()
 
-        if not ext_item:
-            return {'message': "Database error or product not in database"}
+            if not ext_item:
+                continue
 
-        curr_item = Item(
-            code=ext_item[1],
-            name=ext_item[2],
-            quantity=quantity,
-            unit_price=ext_item[3],
-            discount_name=ext_item[4],
-            discount_amount=ext_item[5]
-        )
-        items_objs.append(curr_item)
+            curr_item = Item(
+                code=ext_item[0],
+                name=ext_item[1],
+                quantity=quantity,
+                unit_price=ext_item[2],
+                discount_name=ext_item[3],
+                discount_amount=ext_item[4]
+            )
+            items_objs.append(curr_item)
+        
+        except Exception as e:
+            return {'message': f"Error processing product '{name}'. Please try again later."}
+
+    if len(items_objs) <= 0:
+        raise HTTPException(status_code=404, detail="No items found in database.")
 
     items_dicts = [item.to_dict() for item in items_objs]
 

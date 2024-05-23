@@ -2,7 +2,7 @@ from ultralytics import YOLO
 
 
 def predictImage(Source):
-    model = YOLO('middleware/best.pt')
+    model = YOLO('middleware/visianario_v1.pt')
 
     results = model.predict(Source, save=False, conf=0.2)
 
