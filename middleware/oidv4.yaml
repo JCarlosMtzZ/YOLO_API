@@ -1,0 +1,39 @@
+path: C:\Users\Fabian\OneDrive\Documents\Tec\Semestre10\Desarrollo de Aplicaciones\Reto\Situacion Problema\OIDv4_ToolKit\OID\Dataset # Directorio raiz del dataset
+train: train/images # Imagenes de entrenamiento
+val: validation/images # Imagenes de validacion
+test: test/images # Imagenes de testing
+
+# Clases
+names:
+  0: Apple
+  1: Banana
+  2: Beer
+  3: Bell pepper
+  4: Bread
+  5: Broccoli
+  6: Cabbage
+  7: Cantaloupe
+  8: Carrot
+  9: Cheese
+  10: Coconut
+  11: Cookie
+  12: Cucumber
+  13: Doughnut
+  14: Egg
+  15: Grape
+  16: Lemon
+  17: Mango
+  18: Milk
+  19: Orange
+  20: Peach
+  21: Pear
+  22: Pineapple
+  23: Pomegranate
+  24: Potato
+  25: Radish
+  26: Snack
+  27: Strawberry
+  28: Tomato
+  29: Watermelon
+  30: Wine
+  31: Zucchini
